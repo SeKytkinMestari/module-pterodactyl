@@ -269,6 +269,10 @@ class Pterodactyl extends Module
                 $this->Input->setErrors([]);
             }
 
+            // Workaround
+            $bruhUsername = null;
+            $bruhPassword = null;
+
             // If an account does not exists, create a new one and keep track of the credentials
             if (empty($pterodactyl_user)) {
                 $addParameters = $service_helper->addUserParameters($vars);
@@ -288,6 +292,10 @@ class Pterodactyl extends Module
                         ['key' => 'pterodactyl_password', 'value' => $addParameters['password'], 'encrypted' => 1]
                     ]
                 );
+
+                // Workaround
+                $bruhUsername = $addParameters['username'];
+                $bruhPassword = $addParameters['password'];
             }
 
             // Get Pterodactyl credentials
@@ -302,8 +310,8 @@ class Pterodactyl extends Module
                 $module->id
             );
 
-            $vars['server_username'] = isset($server_username->value) ? $server_username->value : null;
-            $vars['server_password'] = isset($server_password->value) ? $server_password->value : null;
+            $vars['server_username'] = isset($server_username->value) ? $server_username->value : $bruhUsername;
+            $vars['server_password'] = isset($server_password->value) ? $server_password->value : $bruhPassword;
 
             // Create server
             $pterodactyl_server = $this->apiRequest(
